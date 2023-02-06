@@ -11,7 +11,7 @@ char sourcePath[128];
 
 using namespace std;
 
-int _npbp_checklogflag = 0;
+static int _npbp_checklogflag = 0;
 
 static bool first = true;
 
@@ -47,7 +47,7 @@ int messLog(char * log_path, char const * _sourcefilename, size_t line, int leve
 	char sourcefilename[256] = {0};
 	strcpy(sourcefilename, _sourcefilename);
 
-	int pathLen = strlen(sourcePath);
+	int pathLen = int(strlen(sourcePath));
 	if (pathLen != 0)   //有设置sourcePath的情况
 	{
 		if (strstr(_sourcefilename, sourcePath) != nullptr)  //设置的sourcePath正确
@@ -64,20 +64,31 @@ int messLog(char * log_path, char const * _sourcefilename, size_t line, int leve
 	if (NO_LOG == _LOG_LEVEL_)
 		return Error_Succeed;
 
-	int path_len = (int)strlen(log_path);
 
-	if (log_path != NULL)
+	if (log_path == nullptr)
 	{
-		for (iloop = 0; iloop < path_len; iloop++)
+		strcpy(tbuf, "./nt.log");
+	}
+	else
+	{
+		int path_len = int(strlen(log_path));
+		if (log_path[path_len] == '/')					//log_path like "./log/" or "/tmp/"
 		{
-            if (log_path[path_len - iloop] == '/')
-				log_path[path_len - iloop] = 0;
+			for (iloop = 0; iloop < path_len; iloop++)
+			{
+				if (log_path[path_len - iloop] == '/')
+					log_path[path_len - iloop] = 0;
+			}
+			sprintf(tbuf, "%s/nt.log", log_path);
+		}
+		else											//log_path like "./nt.log" or "./log/nt.txt"
+		{
+			strcpy(tbuf, log_path);
 		}
 	}
-	sprintf(tbuf, "%s/ntlog.txt", log_path);
 
 	FILE *fp = fopen(tbuf, "a+");
-	if (fp == NULL)
+	if (fp == nullptr)
 		return Error_FileOpen;
 
 	if (_npbp_checklogflag == 0)
@@ -90,7 +101,7 @@ int messLog(char * log_path, char const * _sourcefilename, size_t line, int leve
 			fclose(fp);
 			remove(tbuf);
 			fp = fopen(tbuf, "a+");
-			if (fp == NULL)
+			if (fp == nullptr)
 				return Error_FileOpen;
 		}
 		fseek(fp, 0L, SEEK_SET);
@@ -100,7 +111,7 @@ int messLog(char * log_path, char const * _sourcefilename, size_t line, int leve
 	tm* local; //本地时间
 	char buf[128] = { 0 };
 
-	t = time(NULL); //或者time(&t);//获取目前秒时间
+	t = time(nullptr); //或者time(&t);//获取目前秒时间
 	local = localtime(&t); //转为本地时间
 	strftime(buf, 64, "%m-%d/%H:%M:%S", local);        //"%Y-%m-%d %H:%M:%S", local);
 	// https://blog.csdn.net/tantion/article/details/86135961

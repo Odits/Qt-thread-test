@@ -28,11 +28,28 @@ set(PROJECT_SOURCES
         ./fake_send&recv/ntlog.h
 )
 
+set(DEMO
+        main.cpp
+        mainwindow.cpp
+        mainwindow.h
+        mainwindow.ui
+)
+
+set(DEV
+    ./fake_send&recv/fake_SR.cpp
+    ./fake_send&recv/fake_SR.h
+    ./fake_send&recv/ntlog.cpp
+    ./fake_send&recv/ntlog.h
+)
+
+
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Qt-thread-test
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
+
+qt_add_executable(Qt-thread-test
+    MANUAL_FINALIZATION
+    ${PROJECT_SOURCES}
+)
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Qt-thread-test APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
@@ -51,7 +68,19 @@ else()
     endif()
 endif()
 
+add_executable(Qt-thread-demo
+    ${DEMO}
+)
+
+add_library(Qt-thread-dev SHARED
+    ${DEV}
+)
+
 target_link_libraries(Qt-thread-test PRIVATE Qt${QT_VERSION_MAJOR}::Widgets -pthread)
+
+target_link_libraries(Qt-thread-demo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets -pthread -ldl)
+
+target_link_libraries(Qt-thread-dev -ldl)
 
 set_target_properties(Qt-thread-test PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
