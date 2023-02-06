@@ -70,7 +70,7 @@ int messLog(char * log_path, char const * _sourcefilename, size_t line, int leve
 	{
 		for (iloop = 0; iloop < path_len; iloop++)
 		{
-			if (log_path[path_len - iloop] == '/')
+            if (log_path[path_len - iloop] == '/')
 				log_path[path_len - iloop] = 0;
 		}
 	}
@@ -253,6 +253,7 @@ size_t strRfindN(const char* dest, char c, int n)
 		char tmp[128] = {0};
 		strncpy(tmp, dest, ret);
 		const char* get = strrchr(tmp, c);
+        if (get == nullptr) return ret;
 		ret -= strlen(get);
 	}
 	return ret;
@@ -264,10 +265,15 @@ void setSourcePath(int n)
 	{
 		char path[128] = __FILE__;
 
-		size_t ret = strRfindN(path, '/', n);
+#ifdef __linux__
+        char gap = '/';
+#else
+        char gap = '\\';
+#endif
+        size_t ret = strRfindN(path, gap, n);
 		path[ret] = 0;
 
-		sprintf(path, "%s/...", path);
+        sprintf(path, "%s%c...", path, gap);
 		sprintf(ntlog_buf, "This is whole Path");
 		messLog(_LOG_PATH_, path, 0, LOG_INFO, 0, ntlog_buf, strlen(ntlog_buf));
 
