@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 	st = this;
 
-	connect(this,&MainWindow::SigDeliverMessStatic,this,&MainWindow::Print_2_result);//关联内部信号与槽
+	connect(this,&MainWindow::SigDeliverMessStatic,this,&MainWindow::Print_to_result);//关联内部信号与槽
 }
 
 MainWindow::~MainWindow()
@@ -44,12 +44,14 @@ void* MainWindow::Thread1(void *)
 void MainWindow::on_pushButton_clicked()
 {
     //创建 mythread1 线程，执行 Thread1() 函数
+	pthread_t mythread1;
 	int res = pthread_create(&mythread1, nullptr, Thread1, nullptr);
     if (res != 0)
     {
 		qDebug("线程创建失败");
         return;
     }
+	ui->pushButton->setFlat(true);
 
 	qDebug("主线程执行完毕");
 
@@ -64,10 +66,11 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 
-void MainWindow::Print_2_result()
+void MainWindow::Print_to_result()
 {
 	qDebug("%s . st->msg = %s\n", __func__, st->msg.toStdString().c_str());
 	//收到信号
+	ui->pushButton->setFlat(false);
 	ui->result->append("msg = " + QString(st->msg));
 }
 

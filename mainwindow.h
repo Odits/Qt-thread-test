@@ -15,7 +15,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    pthread_t mythread1;
     static void* Thread1(void *);
 
 	static MainWindow *st;//定义一个静态类
@@ -27,13 +26,13 @@ signals:
 private slots:
     void on_pushButton_clicked();
 
-    void on_pushButton_2_clicked();
+	void on_pushButton_2_clicked();
 
 private:
 	Ui::MainWindow *ui;
 
 private slots:
-	void Print_2_result();
+	void Print_to_result();
 
 };
 
