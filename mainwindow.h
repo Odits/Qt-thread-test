@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "toola.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,17 +18,23 @@ public:
     pthread_t mythread1;
     static void* Thread1(void *);
 
+	static MainWindow *st;//定义一个静态类
+	static QString msg;
+
+signals:
+	void SigDeliverMessStatic();//内部信号 用于静态函数调用
+
 private slots:
     void on_pushButton_clicked();
 
     void on_pushButton_2_clicked();
 
 private:
-    Ui::MainWindow *ui;
-    ToolA *m_toola;
+	Ui::MainWindow *ui;
 
 private slots:
-    void SlotDeliverMess();
+	void Print_2_result();
 
 };
+
 #endif // MAINWINDOW_H

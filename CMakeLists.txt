@@ -20,8 +20,7 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
 
-        toola.h
-        toola.cpp
+#        toola.h        toola.cpp
 
         ./fake_send&recv/fake_SR.cpp
         ./fake_send&recv/fake_SR.h

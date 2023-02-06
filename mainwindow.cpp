@@ -7,16 +7,17 @@
 
 #include <QDebug>
 
+MainWindow *MainWindow::st = nullptr;//静态类
+QString MainWindow::msg;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-    , m_toola(new ToolA)//初始化ToolA对象
+	, ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(m_toola,&ToolA::SigDeliverMess,this,&MainWindow::SlotDeliverMess);//关联ToolA的信号和MainWindow的槽
+	st = this;
 
-    //调用ToolA中静态方法
-//    m_toola->Funcoo();
+	connect(this,&MainWindow::SigDeliverMessStatic,this,&MainWindow::Print_2_result);//关联内部信号与槽
 }
 
 MainWindow::~MainWindow()
@@ -25,18 +26,16 @@ MainWindow::~MainWindow()
 }
 
 
-static QString info;
-
 void* MainWindow::Thread1(void *)
 {
     char in[32] = "123456789", out[32] = {0};
 
     fake_SR(in, out, 5);
     printf("out = %s\n", out);
-    ToolA::Funcoo(out);
+	msg = out;
+	emit st->SigDeliverMessStatic();//发射内部信号
     qDebug("Thread1 Done");
 
-    //    ui->result->append(QString("out = %1").arg(out));
     return nullptr;
 }
 
@@ -44,35 +43,15 @@ void* MainWindow::Thread1(void *)
 
 void MainWindow::on_pushButton_clicked()
 {
-//    char in[32] = "abcdefg", out[32] = {0};
-
-//    fake_SR(in, out, 10);
-
-//    ui->result->append(QString("out = %1").arg(out));
-//    ui->result->append("DONE");
-
-
-    int res;
-    //创建两个线程变量
-//	pthread_t mythread1, mythread2;
-    void* thread_result;
     //创建 mythread1 线程，执行 Thread1() 函数
-    res = pthread_create(&mythread1, NULL, Thread1, NULL);
+	int res = pthread_create(&mythread1, nullptr, Thread1, nullptr);
     if (res != 0)
     {
-        printf("线程创建失败\n");
+		qDebug("线程创建失败");
         return;
     }
 
-    //阻塞主线程，直至 mythread1 线程执行结束，用 thread_result 指向接收到的返回值，阻塞状态才消除。
-//	res = pthread_join(mythread1, nullptr);
-    //输出线程执行完毕后返回的数据
-//	printf("%s\n", (char*)thread_result);
-    printf("主线程执行完毕\n");
-
-    ui->result->setPlainText(info);
-
-    ui->result->append("DONE");
+	qDebug("主线程执行完毕");
 
     return;
 }
@@ -85,18 +64,11 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 
-
-
-
-
-void MainWindow::SlotDeliverMess()
+void MainWindow::Print_2_result()
 {
-    printf("%s . m_toola->msg = %s\n", __func__, m_toola->msg.toStdString().c_str());
-    //收到ToolA发出的信号
-    qDebug() << "MainWindow received DeliverMess";
-
-
-    ui->result->append("msg = " + QString(m_toola->msg));
+	qDebug("%s . st->msg = %s\n", __func__, st->msg.toStdString().c_str());
+	//收到信号
+	ui->result->append("msg = " + QString(st->msg));
 }
 
 
