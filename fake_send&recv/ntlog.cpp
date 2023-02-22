@@ -1,4 +1,5 @@
 #include "ntlog.h"
+#include <sys/timeb.h>
 
 #define    Error_Succeed  0
 #define    Error_FileOpen       -0x204          //文件打开失败
@@ -118,6 +119,11 @@ int messLog(char * log_path, char const * _sourcefilename, size_t line, int leve
 //	struct timeval tv;
 //	gettimeofday(&tv, NULL);
 //	sprintf(buf, "%s.%d", buf, tv.tv_usec);
+	struct timeb tb;
+	ftime(&tb);
+	char ms[40] = {0};
+	sprintf(ms, ".%03d", tb.millitm%1000);
+	strcat(buf, ms);
 
 	switch (_LOG_LEVEL_)
 	{

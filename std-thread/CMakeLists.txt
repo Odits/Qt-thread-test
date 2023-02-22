@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Qt-thread-test VERSION 0.1 LANGUAGES CXX)
+project(Qt-thread-test2 VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -20,32 +20,17 @@ set(PROJECT_SOURCES
         mainwindow.h
         mainwindow.ui
 
-#        toola.h        toola.cpp
-
-        ./fake_send&recv/fake_SR.cpp
-        ./fake_send&recv/fake_SR.h
-        ./fake_send&recv/ntlog.cpp
-        ./fake_send&recv/ntlog.h
+    ../fake_send&recv/fake_SR.cpp
+    ../fake_send&recv/fake_SR.h
+    ../fake_send&recv/ntlog.cpp
+    ../fake_send&recv/ntlog.h
 )
 
-set(DEMO
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
-)
-
-set(DEV
-    ./fake_send&recv/fake_SR.cpp
-    ./fake_send&recv/fake_SR.h
-    ./fake_send&recv/ntlog.cpp
-    ./fake_send&recv/ntlog.h
-)
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
 
-qt_add_executable(Qt-thread-test
+qt_add_executable(Qt-thread-test2
     MANUAL_FINALIZATION
     ${PROJECT_SOURCES}
 )
@@ -62,27 +47,17 @@ else()
 # Define properties for Android with Qt 5 after find_package() calls as:
 #    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
-        add_executable(Qt-thread-test
+        add_executable(Qt-thread-test2
             ${PROJECT_SOURCES}
         )
     endif()
 endif()
 
-#add_executable(Qt-thread-demo
-#    ${DEMO}
-#)
-#target_link_libraries(Qt-thread-demo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets -pthread -ldl)
 
-#add_library(Qt-thread-dev SHARED
-#    ${DEV}
-#)
-#target_link_libraries(Qt-thread-dev -ldl)
+target_link_libraries(Qt-thread-test2 PRIVATE Qt${QT_VERSION_MAJOR}::Widgets -pthread)
 
 
-target_link_libraries(Qt-thread-test PRIVATE Qt${QT_VERSION_MAJOR}::Widgets -pthread)
-
-
-set_target_properties(Qt-thread-test PROPERTIES
+set_target_properties(Qt-thread-test2 PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
