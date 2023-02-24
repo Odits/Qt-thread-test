@@ -42,8 +42,8 @@ void* MainWindow::Thread1(void *)
 
 void MainWindow::on_pushButton_clicked()
 {
-	std::thread t1(Thread1, nullptr);
-	t1.detach();
+    t1 = new std::thread(Thread1, nullptr);
+
 
 	qDebug("主线程执行完毕");
 
@@ -54,6 +54,8 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     cancel_process();
+    t1->join();
+    delete t1;
     ui->result->append("cancel ing");
 }
 
