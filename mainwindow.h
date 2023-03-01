@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <thread>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,6 +31,7 @@ private slots:
 
 private:
 	Ui::MainWindow *ui;
+    std::thread *t1 = nullptr;
 
 private slots:
 	void Print_to_result();

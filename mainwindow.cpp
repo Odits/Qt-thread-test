@@ -1,7 +1,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include <pthread.h>
 #include <QDebug>
+
+//#include <pthread.h>
+#include <thread>
+
 
 #define USE_SO 1
 
@@ -81,6 +84,7 @@ void* MainWindow::Thread1(void *)
 
 void MainWindow::on_pushButton_clicked()
 {
+#if 0   //pthread
     //创建 mythread1 线程，执行 Thread1() 函数
 	pthread_t mythread1;
 	int res = pthread_create(&mythread1, nullptr, Thread1, nullptr);
@@ -89,7 +93,8 @@ void MainWindow::on_pushButton_clicked()
 		qDebug("线程创建失败");
         return;
     }
-	ui->pushButton->setFlat(true);
+#endif
+    t1 = new std::thread(Thread1, nullptr);
 
 	qDebug("主线程执行完毕");
 
@@ -100,7 +105,12 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_2_clicked()
 {
     cancel_process();
-    ui->result->append("cancel ing");
+    if (t1)
+    {
+        t1->join();
+        delete t1;
+        ui->result->append("cancel ing");
+    }
 }
 
 
