@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QString>
 #include <thread>
 
 QT_BEGIN_NAMESPACE
@@ -18,11 +19,10 @@ public:
 
     static void* Thread1(void *);
 
-	static MainWindow *st;//定义一个静态类
-	static QString msg;
+    static MainWindow *st;//定义一个静态类
 
 signals:
-	void SigDeliverMessStatic();//内部信号 用于静态函数调用
+    void SigDeliverMessStatic(QString);//内部信号 用于静态函数调用
 
 private slots:
     void on_pushButton_clicked();
@@ -34,7 +34,7 @@ private:
     std::thread *t1 = nullptr;
 
 private slots:
-	void Print_to_result();
+    void Print_to_result(QString);
 
 };
 

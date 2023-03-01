@@ -22,7 +22,6 @@ static pcancel_process cancel_process = nullptr;
 
 
 MainWindow *MainWindow::st = nullptr;//静态类
-QString MainWindow::msg;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -31,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 	st = this;
 
-	connect(this,&MainWindow::SigDeliverMessStatic,this,&MainWindow::Print_to_result);//关联内部信号与槽
+    connect(this, &MainWindow::SigDeliverMessStatic, this, &MainWindow::Print_to_result);//关联内部信号与槽
 
 #if !USE_SO
 
@@ -73,8 +72,7 @@ void* MainWindow::Thread1(void *)
 
 	fake_SR(in, out, 2);
     printf("out = %s\n", out);
-	msg = out;
-	emit st->SigDeliverMessStatic();//发射内部信号
+    emit st->SigDeliverMessStatic(QString(out));//发射内部信号
     qDebug("Thread1 Done");
 
     return nullptr;
@@ -114,12 +112,11 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 
-void MainWindow::Print_to_result()
+void MainWindow::Print_to_result(QString msg)
 {
-	qDebug("%s . st->msg = %s\n", __func__, st->msg.toStdString().c_str());
-	//收到信号
-	ui->pushButton->setFlat(false);
-	ui->result->append("msg = " + QString(st->msg));
+    qDebug("%s>--msg = %s\n", __func__, msg.toStdString().c_str());
+    //收到信号
+    ui->result->append("msg = " + msg);
 }
 
 
