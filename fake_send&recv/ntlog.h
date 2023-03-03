@@ -69,21 +69,21 @@
 	messLog(_LOG_PATH_, __FILE__, __LINE__, LOG_ERROR, 0, msg, strlen(msg))
 
 
-#define LOGGER logger log(__func__, __FILE__, __LINE__)
+#define LOGGER Logger log(__func__, __FILE__, __LINE__)
 
-class logger
+class Logger
 {
     char fun_name[32] = {0};
     char path[256] = {0};
 public:
-	logger(const char* msg, char const* file, size_t line)
+    Logger(const char* msg, char const* file, size_t line)
 	{
         strcpy(fun_name, msg);
         strcpy(path, file);
         sprintf(ntlog_buf, "--------------------%s--------------------IN", msg);
         messLog(_LOG_PATH_, file, line, LOG_INFO, 0, ntlog_buf, strlen(ntlog_buf));
     }
-    ~logger()
+    ~Logger()
     {
         sprintf(ntlog_buf, "--------------------%s------------------------------OUT\n", fun_name);
         messLog(_LOG_PATH_, path, 0, LOG_INFO, 0, ntlog_buf, strlen(ntlog_buf));
@@ -92,6 +92,6 @@ public:
 
 size_t strRfindN(const char* dest, char c, int n);
 
-void setSourcePath(int n = 2);
+void LOG_setSourcePath(int n = 2);
 
 #endif

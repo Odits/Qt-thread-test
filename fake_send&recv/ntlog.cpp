@@ -276,7 +276,7 @@ size_t strRfindN(const char* dest, char c, int n)
 	return ret;
 }
 
-void setSourcePath(int n)
+void LOG_setSourcePath(int n)
 {
 	if (first)
 	{

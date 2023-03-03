@@ -2,13 +2,12 @@
 #include "./ui_mainwindow.h"
 #include <QDebug>
 
-//#include <pthread.h>
 #include <thread>
 
 
-#define USE_SO 1
+#define USE_SO 0
 
-#if USE_SO
+#if !USE_SO
 #include "fake_send&recv/fake_SR.h"
 #else
 #include <dlfcn.h>
@@ -32,7 +31,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this, &MainWindow::SigDeliverMessStatic, this, &MainWindow::Print_to_result);//关联内部信号与槽
 
-#if !USE_SO
+
+#if USE_SO
 
 	void* hDll = nullptr;
 	hDll = dlopen("./FSR.so", RTLD_LAZY);
@@ -66,49 +66,41 @@ MainWindow::~MainWindow()
 }
 
 
-void* MainWindow::Thread1(void *)
-{
-    char in[32] = "123456789", out[32] = {0};
 
-	fake_SR(in, out, 2);
+
+
+int MainWindow::callback(char * out)
+{
     printf("out = %s\n", out);
     emit st->SigDeliverMessStatic(QString(out));//发射内部信号
-    qDebug("Thread1 Done");
 
-    return nullptr;
+    qDebug("callback Done");
+    return 0;
 }
 
 
 
 void MainWindow::on_pushButton_clicked()
 {
-#if 0   //pthread
-    //创建 mythread1 线程，执行 Thread1() 函数
-	pthread_t mythread1;
-	int res = pthread_create(&mythread1, nullptr, Thread1, nullptr);
-    if (res != 0)
-    {
-		qDebug("线程创建失败");
-        return;
-    }
-#endif
-    t1 = new std::thread(Thread1, nullptr);
+    initDriver(callback);
+
+    char in[320] = "12345678923456123e4r567u890121234567890", out[32] = {0};
+
+    fake_SR(in, out, 2);
 
 	qDebug("主线程执行完毕");
-
     return;
 }
 
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    cancel_process();
-    if (t1)
-    {
-        t1->join();
-        delete t1;
-        ui->result->append("cancel ing");
-    }
+//    ui->result->append("cancel ing");
+//    cancel_process();
+
+
+    deinit();
+    ui->result->append("deinit ing");
 }
 
 

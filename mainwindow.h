@@ -17,7 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    static void* Thread1(void *);
+    static int callback(char *);
 
     static MainWindow *st;//定义一个静态类
 
@@ -30,8 +30,7 @@ private slots:
 	void on_pushButton_2_clicked();
 
 private:
-	Ui::MainWindow *ui;
-    std::thread *t1 = nullptr;
+    Ui::MainWindow *ui;
 
 private slots:
     void Print_to_result(QString);

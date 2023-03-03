@@ -11,6 +11,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(QTBASE C:/Qt/Qt5.12.12/5.12.12/mingw73_64/lib/cmake) #定义变量
+set(CMAKE_PREFIX_PATH ${QTBASE})  #添加目录给find_package使用
+
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
@@ -41,6 +44,7 @@ set(DEV
     ./fake_send&recv/ntlog.cpp
     ./fake_send&recv/ntlog.h
 )
+
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

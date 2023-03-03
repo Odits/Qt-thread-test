@@ -1,10 +1,17 @@
 
 extern "C"
 {
-	int fake_SR(char *in, char *out, int timeout);
+//默认接口
+typedef int(*Callback)(char* message);
+
+int initDriver(Callback);
+
+int deinit();
 
 
-    int cancel_process();
+int fake_SR(char *in, char *out, int timeout);
+
+int cancel_process();
 
 }
 
